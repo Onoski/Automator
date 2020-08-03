@@ -1,0 +1,77 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachines_Aztstvm_name": {
+            "defaultValue": "Aztstvm",
+            "type": "String"
+        },
+        "disks_Aztstvm_disk1_b236dd6b76ba408f9f408c8fe0c5886c_externalid": {
+            "defaultValue": "/subscriptions/26e2184f-735a-4948-932f-49d0ec193171/resourceGroups/AZRGTST3820/providers/Microsoft.Compute/disks/Aztstvm_disk1_b236dd6b76ba408f9f408c8fe0c5886c",
+            "type": "String"
+        },
+        "networkInterfaces_aztstvm529_externalid": {
+            "defaultValue": "/subscriptions/26e2184f-735a-4948-932f-49d0ec193171/resourceGroups/AzRGTsT3820/providers/Microsoft.Network/networkInterfaces/aztstvm529",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2019-07-01",
+            "name": "[parameters('virtualMachines_Aztstvm_name')]",
+            "location": "[resoureGroups().location]",
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_DS1_v2"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2016-Datacenter",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "osType": "Windows",
+                        "name": "[concat(parameters('virtualMachines_Aztstvm_name'), '_disk1_b236dd6b76ba408f9f408c8fe0c5886c')]",
+                        "createOption": "FromImage",
+                        "caching": "ReadWrite",
+                        "managedDisk": {
+                            "storageAccountType": "Premium_LRS"
+                            
+                        },
+                        "diskSizeGB": 127
+                    },
+                    "dataDisks": []
+                },
+                "osProfile": {
+                    "computerName": "[parameters('virtualMachines_Aztstvm_name')]",
+                    "adminUsername": "usertest",
+                    "adminPassword": "9Jungle@user",
+                    "windowsConfiguration": {
+                        "provisionVMAgent": true,
+                        "enableAutomaticUpdates": true
+                    },
+                    "secrets": [],
+                    "allowExtensionOperations": true,
+                    "requireGuestProvisionSignal": true
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[parameters('networkInterfaces_aztstvm529_externalid')]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "https://azrgtst3820diag.blob.core.windows.net/"
+                    }
+                }
+            }
+        }
+    ]
+}
